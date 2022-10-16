@@ -1,4 +1,5 @@
 # Author: Sam Lehmann
+# Network with him at: https://www.linkedin.com/in/samuellehmann/
 # Date: 2022-10-16
 # Description: Deep groove ball bearing calculator - Determines frontiers under which a bearing may operate.
 # These frontiers are determined based on static factor of safety and the factor of safety for operating lifetime.
@@ -14,7 +15,10 @@ import pandas as pd
 
 DATA_POINTS = 1000  # Number of datapoints determined per bearing
 
+# Factor of safety for static loading as per ISO 76:2006
 STATIC_FOS = 1
+
+# Factor of safety for life as per ISO 281:2007
 LIFE_FOS = 1
 LIFE_ADJ_FACTOR = 0.64  # Converts from 90% life to 95% life: Note 0.64 = 95
 
@@ -33,7 +37,7 @@ DGBB_CALC_FACTORS = pd.DataFrame(
 
 # Limits rated loads to P <= INDETERMINATE_LOAD_LIMITATION *C
 # For indeterminate loads under long term operating conditions, SKF recommends limiting P to 0.1/C, based on fretting
-# of the bearing seat
+# of the bearing seat (page 142 of SKF rolling bearing catalogue)
 INDETERMINATE_LOAD_LIMITATION = 0.1
 
 # Features of a bearing

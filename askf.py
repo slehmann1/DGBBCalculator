@@ -1,3 +1,9 @@
+# Author: Sam Lehmann
+# Network with him at: https://www.linkedin.com/in/samuellehmann/
+# Date: 2022-10-16
+# Class to enable the calculation of a_SKF, the SKF life modification factor for deep groove ball bearings, without the
+# need to reference a graph
+
 import pandas as pd
 import numpy as np
 
@@ -15,6 +21,7 @@ SKF_LIFE_CHART = pd.DataFrame(
               ]),
     columns=["ncPu/P", "0.1", "0.15", "0.2", "0.3", "0.4", "0.5", "0.6", "0.8", "1.0", "1.5", "2.0", "3.0", "4.0"])
 
+
 def determine_askf(kappa, ncpup):
     """
     Calculates the SKF life modification factor a_SKF for a given kappa value and a given η_c * P_u/P for a radial ball
@@ -30,8 +37,8 @@ def determine_askf(kappa, ncpup):
     kappas = [np.argmax(pd.to_numeric(list(SKF_LIFE_CHART.columns)[1::]) > kappa),
               np.argmax(pd.to_numeric(list(SKF_LIFE_CHART.columns)[1::]) > kappa) + 1]
 
-    inputs = [[(pd.to_numeric(list(SKF_LIFE_CHART.columns)[1::]))[kappas[0]-1],
-               (pd.to_numeric(list(SKF_LIFE_CHART.columns)[1::]))[kappas[1]-1]],
+    inputs = [[(pd.to_numeric(list(SKF_LIFE_CHART.columns)[1::]))[kappas[0] - 1],
+               (pd.to_numeric(list(SKF_LIFE_CHART.columns)[1::]))[kappas[1] - 1]],
               [SKF_LIFE_CHART.iloc[ncpups[0], 0], SKF_LIFE_CHART.iloc[ncpups[1], 0]]]
 
     vals = [[SKF_LIFE_CHART.iloc[ncpups[0], kappas[0]], SKF_LIFE_CHART.iloc[ncpups[0], kappas[1]]],
@@ -39,13 +46,13 @@ def determine_askf(kappa, ncpup):
 
     # Linearly interpolate by kappa
     vals = [linterp(inputs[0][0], inputs[0][1], vals[0][0], vals[0][1], kappa),
-            linterp(inputs[0][0], inputs[0][1], vals[1][0], vals[1][1], kappa) ]
+            linterp(inputs[0][0], inputs[0][1], vals[1][0], vals[1][1], kappa)]
 
     vals = linterp(inputs[1][0], inputs[1][1], vals[0], vals[1], ncpup)
     print(f"Final value for a_skf: {vals}")
 
 
-def calculate_ncpup(fatigue_limit, effective_load, contamination_factor = 0.7):
+def calculate_ncpup(fatigue_limit, effective_load, contamination_factor=0.7):
     """
     Calculates n_c * p_u / p
     :param fatigue_limit: P_u - must have same units as the effective load
@@ -53,7 +60,8 @@ def calculate_ncpup(fatigue_limit, effective_load, contamination_factor = 0.7):
     :param contamination_factor: Defaults to 0.7 based on normal cleanliness for sealed bearings that are greased for life
     :return: n_c * p_u / p
     """
-    return fatigue_limit*contamination_factor/effective_load
+    return fatigue_limit * contamination_factor / effective_load
+
 
 def linterp(x1, x2, y1, y2, x3):
     """
@@ -62,5 +70,3 @@ def linterp(x1, x2, y1, y2, x3):
     """
     m = (y2 - y1) / (x2 - x1)
     return (x3 - x1) * m + y1
-
-
